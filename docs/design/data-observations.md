@@ -52,3 +52,14 @@ NYC TLC Trip Record Data, Yellow Taxi, downloaded from the official TLC CloudFro
 - Investigate whether the ~916K null rows correlate with a specific VendorID or trip type
 - Define and implement outlier rejection rules for the Silver layer
 - Confirm schema consistency holds across additional months before scaling ingestion to the full 24-36 month range
+
+## Update: Root cause of missing metadata fields
+
+Investigated the ~916K rows per file missing passenger_count, RatecodeID, store_and_fwd_flag, congestion_surcharge, and Airport_fee together.
+
+Initially suspected a specific VendorID wasn't reporting these fields, but the pattern held across all vendors proportionally. The real cause: **100% of these rows have payment_type = 0** ("no charge" / voided / non-standard fare), across all 3 months, no exceptions.
+
+This means these aren't corrupted or randomly incomplete records — they're a distinct category of trip where the standard end-of-trip metadata never gets populated, likely because the fare itself was never finalized normally.
+
+Decision for the Silver layer: keep these rows rather than dropping or imputing default values. `payment_type = 0` already serves as a natural flag for this category. Gold-layer business marts should decide per-metric whether 
+to include these trips (e.g. exclude from fare/tip averages, include in raw trip-volume counts).
