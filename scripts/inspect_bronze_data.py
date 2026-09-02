@@ -1,6 +1,7 @@
+import io
+
 import boto3
 import pandas as pd
-import io
 
 BUCKET = "kinush02-tlc-platform-bronze"
 FILES = [
