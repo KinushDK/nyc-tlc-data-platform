@@ -16,6 +16,7 @@ The platform follows a Bronze → Silver → Gold flow:
 S3 (Bronze) → Glue (Silver) → S3 (Silver) → Glue (Gold) → S3 (Gold) → Athena
                      ↑
               Step Functions
+![Track A architecture](./images/track-a-architecture.png)
 
 ## 3. Components
 
@@ -74,3 +75,5 @@ At full scale (24–36 months across three trip types), the same architecture wo
 •	Partitioning strategies (by year, month, and trip type) would become more important to keep query performance and costs manageable.
 •	Additional monitoring and alerting would be needed to catch pipeline issues early across a much larger dataset.
 These changes don’t need to be built yet, but they’ve been considered as part of the design.
+
+
