@@ -63,3 +63,8 @@ This means these aren't corrupted or randomly incomplete records — they're a d
 
 Decision for the Silver layer: keep these rows rather than dropping or imputing default values. `payment_type = 0` already serves as a natural flag for this category. Gold-layer business marts should decide per-metric whether 
 to include these trips (e.g. exclude from fare/tip averages, include in raw trip-volume counts).
+
+## Note: unmatched taxi zones in Gold marts
+
+The daily trip volume by borough mart uses a left join against the TLC's taxi_zone_lookup.csv. A small number of trips have PULocationID values thatdon't resolve to a real borough (the lookup table itself marks some zone IDs as "N/A" or "Unknown" — these are known TLC placeholder zones, 
+not join bugs). These show up as their own borough categories in the mart rather than being silently dropped, so downstream consumers can decide whether to include or exclude them.
