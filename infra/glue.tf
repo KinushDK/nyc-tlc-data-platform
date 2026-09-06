@@ -47,3 +47,25 @@ resource "aws_iam_role_policy" "glue_s3_access" {
 resource "aws_glue_catalog_database" "tlc_platform" {
   name = "tlc_platform"
 }
+
+resource "aws_glue_job" "silver_yellow_transform" {
+  name     = "silver-yellow-taxi-transform"
+  role_arn = aws_iam_role.glue_job_role.arn
+
+  command {
+    name            = "glueetl"
+    script_location = "s3://kinush02-tlc-platform-bronze/scripts/glue_transform_yellow.py"
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--job-language"                     = "python"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-metrics"                   = "true"
+  }
+
+  glue_version      = "4.0"
+  worker_type       = "G.1X"
+  number_of_workers = 2
+  timeout           = 30
+}
