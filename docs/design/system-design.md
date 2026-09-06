@@ -12,10 +12,6 @@ The platform follows a Bronze → Silver → Gold flow:
 - Athena queries the Gold-layer tables for reporting and analysis.
 - Step Functions orchestrates the two Glue jobs, ensuring Gold only runs if Silver succeeds.
 
-
-S3 (Bronze) → Glue (Silver) → S3 (Silver) → Glue (Gold) → S3 (Gold) → Athena
-                     ↑
-              Step Functions
 ![Track A architecture](./images/track-a-architecture.png)
 
 ## 3. Components
