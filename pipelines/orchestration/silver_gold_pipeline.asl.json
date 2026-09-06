@@ -1,0 +1,52 @@
+{
+  "Comment": "Bronze to Silver to Gold pipeline for NYC Yellow Taxi data",
+  "StartAt": "RunSilverTransform",
+  "States": {
+    "RunSilverTransform": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Parameters": {
+        "JobName": "silver-yellow-taxi-transform",
+        "Arguments": {
+          "--input_path.$": "$.silver_input_path",
+          "--output_path.$": "$.silver_output_path",
+          "--year.$": "$.year",
+          "--month.$": "$.month"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 2,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "SilverFailed"
+        }
+      ],
+      "Next": "RunGoldTransform"
+    },
+    "RunGoldTransform": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Parameters": {
+        "JobName": "gold-yellow-taxi-marts",
+        "Arguments": {
+          "--silver_path.$": "$.silver_output_path",
+          "--lookup_path.$": "$.lookup_path",
+          "--output_path.$": "$.gold_output_path"
+        }
+      },
+      "End": true
+    },
+    "SilverFailed": {
+      "Type": "Fail",
+      "Error": "SilverTransformFailed",
+      "Cause": "Silver transformation failed after retries; Gold was not attempted."
+    }
+  }
+}
