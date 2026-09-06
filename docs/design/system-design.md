@@ -12,6 +12,7 @@ The platform follows a Bronze → Silver → Gold flow:
 - Athena queries the Gold-layer tables for reporting and analysis.
 - Step Functions orchestrates the two Glue jobs, ensuring Gold only runs if Silver succeeds.
 
+
 ![Track A architecture](./images/track-a-architecture.png)
 
 ## 3. Components
@@ -52,24 +53,25 @@ Here’s what happens to a single month of data, from start to finish:
 
 ## 5. Failure Modes and Handling
 The design follows a “fail loud and early” philosophy:
-•	Silver job fails mid-run: Step Functions retries twice with exponential backoff. If it still fails, the workflow stops before Gold runs, preventing downstream jobs from using incomplete data.
-•	Bad timestamps in a month’s data: These are filtered out during the Silver transformation (e.g., the 2007 outlier found in March 2025 data).
-•	Trips with no borough match: These appear as “N/A” or “Unknown” in the Gold layer instead of being silently dropped, preserving data transparency.
+- Silver job fails mid-run: Step Functions retries twice with exponential backoff. If it still fails, the workflow stops before Gold runs, preventing downstream jobs from using incomplete data.
+- Bad timestamps in a month’s data: These are filtered out during the Silver transformation (e.g., the 2007 outlier found in March 2025 data).
+- Trips with no borough match: These appear as “N/A” or “Unknown” in the Gold layer instead of being silently dropped, preserving data transparency.
 
 
 ## 6. Known Limitations and Open Items
-•  Only three months of data (January–March 2025) have been processed so far, not the full 24–36 month range.
-•  The Gold layer has been validated locally but is not yet deployed as an actual Glue job.
-•  AWS Glue and Cost Explorer access are currently blocked pending resolution of an AWS Support case.
-•  IAM roles for the human user currently use broad AdministratorAccess. The Glue job role is reasonably scoped but has not yet undergone a full security review — this is planned for Phase 4.
-•  No automated data quality checks are in place yet — these are planned for Phase 2.
+- Only three months of data (January–March 2025) have been processed so far, not the full 24–36 month range.
+- The Gold layer has been validated locally but is not yet deployed as an actual Glue job.
+- AWS Glue and Cost Explorer access are currently blocked pending resolution of an AWS Support case.
+- IAM roles for the human user currently use broad AdministratorAccess. The Glue job role is reasonably scoped but has not yet undergone a full security review — this is planned for Phase 4.
+- No automated data quality checks are in place yet — these are planned for Phase 2.
 
 
 ## 7. What This Design Would Look Like at Full Scale
 At full scale (24–36 months across three trip types), the same architecture would apply, but with adjustments:
-•	Glue worker counts and job concurrency would likely need to increase to handle the larger data volume.
-•	Partitioning strategies (by year, month, and trip type) would become more important to keep query performance and costs manageable.
-•	Additional monitoring and alerting would be needed to catch pipeline issues early across a much larger dataset.
+- Glue worker counts and job concurrency would likely need to increase to handle the larger data volume.
+- Partitioning strategies (by year, month, and trip type) would become more important to keep query performance and costs manageable.
+- Additional monitoring and alerting would be needed to catch pipeline issues early across a much larger dataset.
+
 These changes don’t need to be built yet, but they’ve been considered as part of the design.
 
 
