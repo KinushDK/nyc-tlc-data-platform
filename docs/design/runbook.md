@@ -123,6 +123,15 @@ If a month’s Silver or Gold output turns out to be incorrect (e.g., unexpected
   `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.  
   Spark’s default Hadoop credential chain does not automatically read the AWS CLI’s `~/.aws/credentials` file.
 
+- **AWS CloudWatch custom metrics with multiple dimensions require an exact match on all dimensions, not just one.**
+For example, Glue publishes glue.driver.aggregate.numCompletedTasks with three dimensions together: Type, JobRunId, and JobName. If you filter a dashboard widget by JobName alone, it silently returns no data, even though the metric genuinely exists.
+Use aws cloudwatch list-metrics to see the real dimension set for a metric before writing dashboard JSON, rather than guessing. The JobRunId = "ALL" value aggregates across all runs of a job — this is the right choice for a permanent dashboard, instead of hardcoding one specific run ID.
+
+- **A Terraform-managed CloudWatch dashboard can silently drift if edited via the console.**
+Adding a widget through the console UI and clicking “Save” saves the browser’s entire current view of the dashboard — not just the new widget. This can overwrite an already-correct Terraform-applied configuration with stale browser state.
+If this happens, running terraform apply restores the correct version. The safest practice is to treat any Terraform-managed dashboard as read-only in the console: make all changes in code, then apply.
+Also, dashboard widgets can show stale cached data in the browser even after a real config change. A hard refresh (Ctrl+Shift+R) is sometimes needed to see the actual current state.
+
 ***
 
 ## 7. Escalation
