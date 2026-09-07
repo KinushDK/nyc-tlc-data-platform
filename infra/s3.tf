@@ -1,4 +1,4 @@
-# ── Bronze bucket (already in the file) ──
+# ── Bronze bucket ──
 resource "aws_s3_bucket" "bronze" {
   bucket = "kinush02-tlc-platform-bronze"
 }
@@ -18,7 +18,7 @@ resource "aws_s3_bucket_public_access_block" "bronze" {
   restrict_public_buckets = true
 }
 
-# ── Silver bucket (new, add below) ──
+# ── Silver bucket ──
 resource "aws_s3_bucket" "silver" {
   bucket = "kinush02-tlc-platform-silver"
 }
@@ -32,6 +32,27 @@ resource "aws_s3_bucket_versioning" "silver" {
 
 resource "aws_s3_bucket_public_access_block" "silver" {
   bucket                  = aws_s3_bucket.silver.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# ── Gold bucket ──
+resource "aws_s3_bucket" "gold" {
+  bucket = "kinush02-tlc-platform-gold"
+}
+
+resource "aws_s3_bucket_versioning" "gold" {
+  bucket = aws_s3_bucket.gold.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "gold" {
+  bucket = aws_s3_bucket.gold.id
+
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true

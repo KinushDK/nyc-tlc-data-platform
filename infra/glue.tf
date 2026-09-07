@@ -37,7 +37,9 @@ resource "aws_iam_role_policy" "glue_s3_access" {
         aws_s3_bucket.bronze.arn,
         "${aws_s3_bucket.bronze.arn}/*",
         aws_s3_bucket.silver.arn,
-        "${aws_s3_bucket.silver.arn}/*"
+        "${aws_s3_bucket.silver.arn}/*",
+        aws_s3_bucket.gold.arn,
+        "${aws_s3_bucket.gold.arn}/*"
       ]
     }]
   })
@@ -55,6 +57,28 @@ resource "aws_glue_job" "silver_yellow_transform" {
   command {
     name            = "glueetl"
     script_location = "s3://kinush02-tlc-platform-bronze/scripts/glue_transform_yellow.py"
+    python_version  = "3"
+  }
+
+  default_arguments = {
+    "--job-language"                     = "python"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-metrics"                   = "true"
+  }
+
+  glue_version      = "4.0"
+  worker_type       = "G.1X"
+  number_of_workers = 2
+  timeout           = 30
+}
+
+resource "aws_glue_job" "gold_yellow_marts" {
+  name     = "gold-yellow-taxi-marts"
+  role_arn = aws_iam_role.glue_job_role.arn
+
+  command {
+    name            = "glueetl"
+    script_location = "s3://kinush02-tlc-platform-bronze/scripts/glue_build_marts.py"
     python_version  = "3"
   }
 
