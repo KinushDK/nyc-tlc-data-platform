@@ -6,16 +6,12 @@ It’s designed for two main audiences: data analysts who will run Athena querie
 
 ## 2. Architecture Overview
 The platform follows a Bronze → Silver → Gold flow:
-•  Raw trip data lands in an S3 Bronze bucket.
-•  A Glue job transforms and cleans the data, writing the result to an S3 Silver bucket.
-•  A second Glue job builds business-ready marts from the Silver data and writes them to an S3 Gold bucket.
-•  Athena queries the Gold-layer tables for reporting and analysis.
-•  Step Functions orchestrates the two Glue jobs, ensuring Gold only runs if Silver succeeds.
+- Raw trip data lands in an S3 Bronze bucket.
+- A Glue job transforms and cleans the data, writing the result to an S3 Silver bucket.
+- A second Glue job builds business-ready marts from the Silver data and writes them to an S3 Gold bucket.
+- Athena queries the Gold-layer tables for reporting and analysis.
+- Step Functions orchestrates the two Glue jobs, ensuring Gold only runs if Silver succeeds.
 
-
-S3 (Bronze) → Glue (Silver) → S3 (Silver) → Glue (Gold) → S3 (Gold) → Athena
-                     ↑
-              Step Functions
 ![Track A architecture](./images/track-a-architecture.png)
 
 ## 3. Components
