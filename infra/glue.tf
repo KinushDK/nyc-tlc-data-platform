@@ -93,3 +93,73 @@ resource "aws_glue_job" "gold_yellow_marts" {
   number_of_workers = 2
   timeout           = 30
 }
+
+resource "aws_glue_catalog_table" "daily_trip_volume_by_borough" {
+  name          = "daily_trip_volume_by_borough"
+  database_name = aws_glue_catalog_database.tlc_platform.name
+  table_type    = "EXTERNAL_TABLE"
+
+  parameters = {
+    "classification" = "parquet"
+  }
+
+  storage_descriptor {
+    location      = "s3://${aws_s3_bucket.gold.id}/yellow/2025-02/daily_trip_volume_by_borough/"
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+
+    columns {
+      name = "pickup_date"
+      type = "date"
+    }
+    columns {
+      name = "borough"
+      type = "string"
+    }
+    columns {
+      name = "trip_count"
+      type = "bigint"
+    }
+  }
+}
+
+resource "aws_glue_catalog_table" "daily_fare_tip_trends" {
+  name          = "daily_fare_tip_trends"
+  database_name = aws_glue_catalog_database.tlc_platform.name
+  table_type    = "EXTERNAL_TABLE"
+
+  parameters = {
+    "classification" = "parquet"
+  }
+
+  storage_descriptor {
+    location      = "s3://${aws_s3_bucket.gold.id}/yellow/2025-02/daily_fare_tip_trends/"
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+    }
+
+    columns {
+      name = "pickup_date"
+      type = "date"
+    }
+    columns {
+      name = "avg_fare"
+      type = "double"
+    }
+    columns {
+      name = "avg_tip"
+      type = "double"
+    }
+    columns {
+      name = "paid_trip_count"
+      type = "bigint"
+    }
+  }
+}
