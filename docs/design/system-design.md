@@ -28,8 +28,9 @@ The platform follows a Bronze → Silver → Gold flow:
 - The Gold job (validated locally, not yet deployed as a Glue job) reads Silver data and the TLC zone lookup table to build two marts: daily trip volume by borough, and daily average fare and tip amounts.
 
 ### Cataloging (Glue Data Catalog + Athena)
-- The Glue Data Catalog holds table definitions for Silver and Gold layers, making the data discoverable and queryable.
-- Athena is intended to query the Gold-layer tables. The Data Catalog database exists, but end-to-end Athena access is pending full Glue job deployment.
+- The Glue Data Catalog holds table definitions for Gold layer marts,registered as Terraform-managed aws_glue_catalog_table resources.
+- Athena is fully operational: two Gold-layer tables(daily_trip_volume_by_borough, daily_fare_tip_trends) are queryable via a dedicated workgroup (tlc-platform-workgroup), with results written to a separate S3 prefix.
+- Current limitation: table locations point to a single month's S3 path rather than being partitioned by year/month - fine for proving the pipeline works end-to-end, but will need Hive-style partitioning before scaling to the full 24-36 month range.
 
 ### Orchestration (Step Functions)
 - The Step Functions state machine (tlc-silver-gold-pipeline) runs the Silver Glue job first. If it succeeds, it triggers the Gold Glue job.
@@ -61,7 +62,6 @@ The design follows a “fail loud and early” philosophy:
 ## 6. Known Limitations and Open Items
 - Only three months of data (January–March 2025) have been processed so far, not the full 24–36 month range.
 - The Gold layer has been validated locally but is not yet deployed as an actual Glue job.
-- AWS Glue and Cost Explorer access are currently blocked pending resolution of an AWS Support case.
 - IAM roles for the human user currently use broad AdministratorAccess. The Glue job role is reasonably scoped but has not yet undergone a full security review — this is planned for Phase 4.
 - No automated data quality checks are in place yet — these are planned for Phase 2.
 
