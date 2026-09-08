@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "spark_irsa_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "${module.eks.oidc_provider}:sub"
-      values   = ["system:serviceaccount:spark-jobs:spark-operator-sa"]
+      values   = ["system:serviceaccount:spark-jobs:spark-jobs-sa"]
     }
 
     condition {
