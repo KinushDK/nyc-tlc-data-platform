@@ -132,6 +132,11 @@ Adding a widget through the console UI and clicking “Save” saves the browser
 If this happens, running terraform apply restores the correct version. The safest practice is to treat any Terraform-managed dashboard as read-only in the console: make all changes in code, then apply.
 Also, dashboard widgets can show stale cached data in the browser even after a real config change. A hard refresh (Ctrl+Shift+R) is sometimes needed to see the actual current state.
 
+- **t3.micro nodes cannot run real Spark workloads on Kubernetes, even with minimal resource requests.** Reducing driver/executor memory to
+  384m still failed with "Insufficient memory, Too many pods" scheduling errors - the combination of t3.micro's ~1GB RAM and low pod-per-node
+  limit means there's no configuration that fits a working Spark driver alongside required system pods (kubelet, CNI, kube-proxy) and the Spark Operator's own controller/webhook pods. If blocked on Free-Tier-only
+  instance restrictions, this specific workload cannot be tested until the restriction is lifted - don't spend time tuning resource requests further, it's a hard ceiling, not a tuning problem.
+  
 ***
 
 ## 7. Escalation
