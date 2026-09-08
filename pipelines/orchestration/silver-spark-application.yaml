@@ -1,0 +1,27 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: silver-yellow-transform
+  namespace: spark-jobs
+spec:
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: 221185654241.dkr.ecr.us-east-1.amazonaws.com/tlc-silver-transform:latest
+  imagePullPolicy: Always
+  mainApplicationFile: local:///opt/spark/work-dir/transform_yellow.py
+  arguments:
+    - "s3a://kinush02-tlc-platform-bronze/raw/yellow/2025-03.parquet"
+    - "s3a://kinush02-tlc-platform-silver/yellow-k8s/2025-03"
+    - "2025"
+    - "3"
+  sparkVersion: "3.4.0"
+  driver:
+    cores: 1
+    memory: "512m"
+    serviceAccount: spark-jobs-sa
+  executor:
+    cores: 1
+    instances: 1
+    memory: "512m"
+    serviceAccount: spark-jobs-sa
