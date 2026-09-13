@@ -18,7 +18,10 @@ def build_spark_session(app_name: str = "silver-yellow-transform") -> SparkSessi
     spark = SparkSession.builder.appName(app_name).getOrCreate()
 
     hadoop_conf = spark._jsc.hadoopConfiguration()
-    hadoop_conf.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+    hadoop_conf.set(
+        "fs.s3a.aws.credentials.provider",
+        "com.amazonaws.auth.WebIdentityTokenCredentialsProvider",
+    )
 
     return spark
 
