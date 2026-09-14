@@ -29,3 +29,7 @@ postgresql:
       requests:
         cpu: 100m
         memory: 256Mi
+
+config:
+  kubernetes_executor:
+    delete_worker_pods: "False"
