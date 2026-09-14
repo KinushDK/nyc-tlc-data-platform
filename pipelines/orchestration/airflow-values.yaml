@@ -19,9 +19,9 @@ scheduler:
   resources:
     requests:
       cpu: 100m
-      memory: 512Mi
+      memory: 768Mi
     limits:
-      memory: 512Mi
+      memory: 1024Mi
 
 postgresql:
   primary:
