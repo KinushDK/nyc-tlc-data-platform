@@ -6,3 +6,13 @@ resource "aws_ecr_repository" "silver_transform" {
     scan_on_push = true
   }
 }
+
+
+resource "aws_ecr_repository" "gold_transform" {
+  name                 = "tlc-gold-transform"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
