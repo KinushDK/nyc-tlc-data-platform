@@ -39,8 +39,14 @@ metadata:
   namespace: spark-jobs
 rules:
   - apiGroups: ["sparkoperator.k8s.io"]
-    resources: ["sparkapplications"]
+    resources: ["sparkapplications", "sparkapplications/status"]
     verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
