@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import (
@@ -18,7 +18,7 @@ with DAG(
     dag_id="tlc_silver_gold_pipeline",
     default_args=default_args,
     schedule=None,
-    start_date=datetime(2026, 1, 1),
+    start_date=datetime(2026, 1, 1, tzinfo=timezone.utc),
     catchup=False,
     tags=["tlc", "spark", "silver-gold"],
 ) as dag:
