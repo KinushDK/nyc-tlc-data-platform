@@ -24,10 +24,3 @@ spec:
     memory: "512m"
     instances: 1
     serviceAccount: spark-jobs-sa
-    
-monitor_silver = SparkKubernetesSensor(
-    task_id="monitor_silver_transform",
-    namespace="spark-jobs",
-    application_name="silver-yellow-transform",
-    kubernetes_conn_id="kubernetes_default",
-)
