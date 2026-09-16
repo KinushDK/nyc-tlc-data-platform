@@ -17,10 +17,10 @@ spec:
   sparkVersion: "3.4.0"
   driver:
     cores: 1
-    memory: "768m"
+    memory: "512m"
     serviceAccount: spark-jobs-sa
   executor:
     cores: 1
-    memory: "768m"
+    memory: "512m"
     instances: 1
     serviceAccount: spark-jobs-sa
