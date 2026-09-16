@@ -29,3 +29,10 @@ spec:
     serviceAccount: spark-jobs-sa
     securityContext:
       runAsUser: 0
+      
+monitor_silver = SparkKubernetesSensor(
+    task_id="monitor_silver_transform",
+    namespace="spark-jobs",
+    application_name="silver-yellow-transform",
+    kubernetes_conn_id="kubernetes_default",
+)

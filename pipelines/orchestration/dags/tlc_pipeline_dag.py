@@ -27,7 +27,7 @@ with DAG(
         namespace="spark-jobs",
         application_file="silver-spark-application.yaml",
         kubernetes_conn_id="kubernetes_default",
-        do_xcom_push=True,
+        do_xcom_push=False,
     )
 
     monitor_silver = SparkKubernetesSensor(
@@ -42,7 +42,7 @@ with DAG(
         namespace="spark-jobs",
         application_file="gold-spark-application.yaml",
         kubernetes_conn_id="kubernetes_default",
-        do_xcom_push=True,
+        do_xcom_push=False,
     )
 
     monitor_gold = SparkKubernetesSensor(
