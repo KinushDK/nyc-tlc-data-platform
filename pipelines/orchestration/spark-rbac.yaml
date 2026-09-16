@@ -57,6 +57,9 @@ subjects:
   - kind: ServiceAccount
     name: airflow-worker
     namespace: airflow
+  - kind: ServiceAccount
+    name: airflow-dag-processor
+    namespace: airflow
 roleRef:
   kind: Role
   name: airflow-spark-access
