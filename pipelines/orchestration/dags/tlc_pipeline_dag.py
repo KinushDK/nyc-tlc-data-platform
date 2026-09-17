@@ -29,6 +29,7 @@ with DAG(
         kubernetes_conn_id="kubernetes_default",
         do_xcom_push=False,
         delete_on_termination=False,
+        random_name_suffix=False,
     )
 
     monitor_silver = SparkKubernetesSensor(
@@ -45,6 +46,7 @@ with DAG(
         kubernetes_conn_id="kubernetes_default",
         do_xcom_push=False,
         delete_on_termination=False,
+        random_name_suffix=False,
     )
 
     monitor_gold = SparkKubernetesSensor(
