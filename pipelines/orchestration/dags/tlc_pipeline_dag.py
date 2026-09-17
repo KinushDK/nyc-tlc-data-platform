@@ -33,7 +33,7 @@ with DAG(
     monitor_silver = SparkKubernetesSensor(
         task_id="monitor_silver_transform",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='submit_silver_transform')['metadata']['name'] }}",
+        application_name="silver-yellow-transform",
         kubernetes_conn_id="kubernetes_default",
     )
 
@@ -48,7 +48,7 @@ with DAG(
     monitor_gold = SparkKubernetesSensor(
         task_id="monitor_gold_transform",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='submit_gold_transform')['metadata']['name'] }}",
+        application_name="gold-yellow-marts",
         kubernetes_conn_id="kubernetes_default",
     )
 
