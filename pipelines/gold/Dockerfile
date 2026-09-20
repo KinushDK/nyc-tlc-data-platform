@@ -11,6 +11,6 @@ RUN curl -o /opt/spark/jars/hadoop-aws-3.3.4.jar \
 
 COPY build_marts.py /opt/spark/work-dir/build_marts.py
 
-USER spark
+USER 185
 
 WORKDIR /opt/spark/work-dir
