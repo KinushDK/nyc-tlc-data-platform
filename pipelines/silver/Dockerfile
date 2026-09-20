@@ -12,6 +12,6 @@ RUN curl -o /opt/spark/jars/hadoop-aws-3.3.4.jar \
 
 COPY transform_yellow.py /opt/spark/work-dir/transform_yellow.py
 
-USER spark
+USER 185
 
 WORKDIR /opt/spark/work-dir
