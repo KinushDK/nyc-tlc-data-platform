@@ -1,0 +1,45 @@
+name: Build and Push Spark Images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pipelines/silver/**'
+      - 'pipelines/gold/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: silver
+            path: pipelines/silver
+            ecr_repo: tlc-silver-transform
+          - name: gold
+            path: pipelines/gold
+            ecr_repo: tlc-gold-transform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::221185654241:role/tlc-platform-github-actions-ecr-push
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          docker build -t $ECR_REGISTRY/${{ matrix.ecr_repo }}:latest ${{ matrix.path }}
+          docker push $ECR_REGISTRY/${{ matrix.ecr_repo }}:latest
