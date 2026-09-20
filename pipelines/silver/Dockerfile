@@ -1,4 +1,5 @@
 # CI/CD verification test - safe to remove after confirming workflow runs
+# Trigger CI/CD to test OIDC debug step
 FROM apache/spark-py:v3.4.0
 
 USER root
