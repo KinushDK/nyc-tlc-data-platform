@@ -137,6 +137,12 @@ Also, dashboard widgets can show stale cached data in the browser even after a r
   limit means there's no configuration that fits a working Spark driver alongside required system pods (kubelet, CNI, kube-proxy) and the Spark Operator's own controller/webhook pods. If blocked on Free-Tier-only
   instance restrictions, this specific workload cannot be tested until the restriction is lifted - don't spend time tuning resource requests further, it's a hard ceiling, not a tuning problem.
   
+- **Cluster nodes can silently stop responding (kubelet "stopped posting  node status" or become "unreachable") without any obvious trigger.**
+  This happened twice in one session, on different nodes, unrelated to any specific workload. Symptoms include widespread kubectl timeouts,
+  port-forward failures, and pods stuck Pending with "Too many pods" or scheduling errors even when overall cluster capacity should be
+  sufficient. Diagnosis: `kubectl get nodes` shows NotReady, and `kubectl describe node` shows a stale LastHeartbeatTime or unreachable
+  taints. Fix: cordon the node, terminate its EC2 instance directly, and let the ASG auto-replace it - don't spend time trying to revive an unresponsive kubelet.
+  
 ***
 
 ## 7. Escalation
