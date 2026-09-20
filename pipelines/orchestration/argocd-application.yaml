@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tlc-spark-jobs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/KinushDK/nyc-tlc-data-platform.git
+    targetRevision: main
+    path: pipelines/orchestration
+    directory:
+      include: "{spark-rbac.yaml,storage-class.yaml}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: spark-jobs
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
