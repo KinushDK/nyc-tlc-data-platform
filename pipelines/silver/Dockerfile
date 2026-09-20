@@ -1,3 +1,4 @@
+# CI/CD verification test - safe to remove after confirming workflow runs
 FROM apache/spark-py:v3.4.0
 
 USER root
