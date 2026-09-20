@@ -1,0 +1,15 @@
+grafana:
+  adminPassword: admin
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+prometheus:
+  prometheusSpec:
+    resources:
+      requests:
+        memory: 256Mi
+      limits:
+        memory: 512Mi
